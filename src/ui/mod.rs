@@ -2,6 +2,8 @@
 
 use crate::prelude::*;
 
-pub mod params;
 pub mod shape;
 pub mod text_slider;
+pub mod draw;
+
+pub use draw::Drawable;
