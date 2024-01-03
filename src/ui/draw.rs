@@ -3,7 +3,7 @@ use crate::model::InputData;
 
 pub trait Drawable {
     fn update(&mut self, input_data: &InputData);
-    fn force_redraw(&self, draw: &Draw);
+    fn force_redraw(&self, draw: &Draw, frame: &Frame);
     fn draw(&self, draw: &Draw, frame: &Frame);
     fn rect(&self) -> &Rect;
 
