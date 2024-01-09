@@ -1,9 +1,10 @@
 //! Module for the app's state.
 
-use crate::prelude::*;
-use std::time::Instant;
-use std::sync::Arc;
+use super::*;
 use crate::audio::model::AudioModel;
+use crate::prelude::*;
+use std::sync::Arc;
+use std::time::Instant;
 
 /// The app's global state.
 pub struct AppModel {
@@ -12,7 +13,6 @@ pub struct AppModel {
 
     sample_rate: Arc<Atomic<f32>>,
     audio_stream: nannou_audio::Stream<AudioModel>,
-
 
     frame_timer: Instant,
 }
@@ -23,17 +23,21 @@ impl AppModel {
         let win = app
             .new_window()
             .size(800, 800)
+            .resizable(false)
             .view(super::view::view)
+            .title("Rhythmic Shapes DEMO")
             .msaa_samples(4)
             .build()
             .expect("failed to initialise app window!");
+
+        let AudioSystem { audio_stream, sample_rate } = AudioSystem::build();
 
         Self {
             win,
             input_data: InputData::default(),
 
-            sample_rate: Arc::new(Atomic::new(44100.0)),
-            audio_stream: todo!(),
+            sample_rate,
+            audio_stream,
 
             frame_timer: Instant::now(),
         }

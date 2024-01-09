@@ -2,6 +2,10 @@
 
 use super::*;
 
-pub struct AudioModel {
-    //
+pub struct AudioModel {}
+
+impl AudioModel {
+    pub fn build() -> Self {
+        Self {}
+    }
 }
