@@ -8,5 +8,8 @@ mod audio;
 use prelude::*;
 
 fn main() {
-    println!("Hello, world!");
+    nannou::app(model::AppModel::build)
+        .loop_mode(nannou::LoopMode::RefreshSync)
+        .update(model::update)
+        .run();
 }
