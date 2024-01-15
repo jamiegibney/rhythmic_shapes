@@ -45,7 +45,6 @@ impl AppModel {
             .size(800, 800)
             .resizable(false)
             .view(super::view::view)
-            .key_pressed(key_pressed)
             .title("Rhythmic Shapes Demo")
             .msaa_samples(4)
             .build()
@@ -134,18 +133,4 @@ pub struct InputData {
 
     /// The time delta since the last frame.
     pub delta_time: f32,
-}
-
-fn key_pressed(_app: &App, app_model: &mut AppModel, key: Key) {
-    if matches!(key, Key::Space) {
-        app_model
-            .note_event_sender
-            .send(NoteEvent::NoteOn {
-                timing: app_model.current_sample_idx(),
-                data: NoteEventData {
-                note: 69.0, // A4 (440 Hz)
-            },
-            })
-            .unwrap();
-    }
 }

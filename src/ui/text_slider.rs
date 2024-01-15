@@ -392,7 +392,7 @@ impl TextSlider {
 
     pub fn redraw_label(&self, draw: &Draw) {
         let h = self.rect.h();
-        let label_rect = self.rect.shift(pt2(0.0, h + h * 0.1));
+        let label_rect = self.rect.shift(pt2(0.0, h.mul_add(0.1, h)));
 
         if let Some(label) = self.label.as_ref() {
             draw.text(label)
@@ -513,9 +513,8 @@ impl Drawable for TextSlider {
                 * if input.is_shift_pressed { 0.1 } else { 1.0 }
                 * 0.4;
 
-            self.raw_value = (y_scr as f32)
-                .mul_add(sensitivity, self.raw_value)
-                .clamp(0.0, 1.0);
+            self.raw_value =
+                y_scr.mul_add(sensitivity, self.raw_value).clamp(0.0, 1.0);
 
             self.update_output_value();
         }
@@ -537,7 +536,7 @@ impl Drawable for TextSlider {
 
         // is the slider being dragged?
         if let Some(prev) = self.prev_mouse_pos {
-            let delta = (input.mouse_pos.y - prev.y) as f32;
+            let delta = input.mouse_pos.y - prev.y;
 
             // is the drag delta large enough to update?
             if delta.abs() <= f32::EPSILON {
