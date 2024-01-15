@@ -1,14 +1,12 @@
 //! Module for the app's state.
 
 use super::*;
+use crate::audio::voice::NoteEventData;
 use crate::prelude::*;
 use crate::ui::shape::Sequence;
 use crate::ui::text_slider::TextSlider;
 use crate::{
-    audio::{
-        model::AudioModel,
-        voice::NoteEvent,
-    },
+    audio::{model::AudioModel, voice::NoteEvent},
     ui::default_text_layout,
 };
 use std::sync::{mpsc, Arc};
@@ -25,6 +23,7 @@ pub struct AppModel {
     pub sample_rate: Arc<Atomic<f32>>,
     /// The app's audio stream.
     audio_stream: Stream<AudioModel>,
+    callback_timer: Arc<Atomic<f32>>,
 
     /// The bounding rect for the shape sequencer.
     pub sequencer_rect: Rect,
@@ -46,6 +45,7 @@ impl AppModel {
             .size(800, 800)
             .resizable(false)
             .view(super::view::view)
+            .key_pressed(key_pressed)
             .title("Rhythmic Shapes Demo")
             .msaa_samples(4)
             .build()
@@ -55,9 +55,8 @@ impl AppModel {
             audio_stream,
             sample_rate,
             note_event_sender,
+            callback_timer,
         } = AudioSystem::build();
-
-        let x = 0;
 
         let sequencer_rect = Rect::from_wh(pt2(650.0, 650.0));
 
@@ -67,6 +66,7 @@ impl AppModel {
 
             sample_rate,
             audio_stream,
+            callback_timer,
 
             sequencer_rect,
             sequencer: Sequence::new(sequencer_rect, 4),
@@ -102,6 +102,13 @@ impl AppModel {
         self.input_data.is_ctrl_pressed = app.keys.mods.ctrl();
         self.input_data.is_os_pressed = app.keys.mods.logo();
     }
+
+    pub fn current_sample_idx(&self) -> u32 {
+        let timer = self.callback_timer.lr();
+        let samples_exact = timer * self.sample_rate.lr();
+
+        samples_exact.round() as u32 % BUFFER_SIZE as u32
+    }
 }
 
 /// General user input data.
@@ -127,4 +134,18 @@ pub struct InputData {
 
     /// The time delta since the last frame.
     pub delta_time: f32,
+}
+
+fn key_pressed(_app: &App, app_model: &mut AppModel, key: Key) {
+    if matches!(key, Key::Space) {
+        app_model
+            .note_event_sender
+            .send(NoteEvent::NoteOn {
+                timing: app_model.current_sample_idx(),
+                data: NoteEventData {
+                note: 69.0, // A4 (440 Hz)
+            },
+            })
+            .unwrap();
+    }
 }

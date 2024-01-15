@@ -32,5 +32,5 @@ impl NoteEvent {
 /// The data encoded into each note event.
 #[derive(Clone, Copy, Debug)]
 pub struct NoteEventData {
-    note: f32,
+    pub note: f32,
 }

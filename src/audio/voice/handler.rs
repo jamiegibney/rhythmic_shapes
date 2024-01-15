@@ -32,7 +32,7 @@ impl VoiceHandler {
             // note_handler_ref,
             voices: std::array::from_fn(|_| None),
             id_counter: 0,
-            envelope_data: build_envelope(sample_rate_ref.lr(), 0.4),
+            envelope_data: build_envelope(sample_rate_ref.lr(), 0.3),
             sample_rate: sample_rate_ref,
         }
     }
@@ -144,6 +144,6 @@ fn build_envelope(sample_rate: f32, envelope_time_secs: f32) -> Arc<[f32]> {
 
     (0..num_steps as usize)
         .rev()
-        .map(|i| i as f32 / num_steps)
+        .map(|i| (i as f32 / num_steps) * 0.125)
         .collect()
 }

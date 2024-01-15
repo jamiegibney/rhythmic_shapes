@@ -54,4 +54,6 @@ pub fn process(audio: &mut AudioModel, buffer: &mut Buffer) {
         block_start = block_end;
         block_end = (block_end + MAX_BLOCK_SIZE).min(buffer_len);
     }
+
+    audio.set_callback_timer();
 }
