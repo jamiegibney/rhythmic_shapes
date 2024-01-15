@@ -4,10 +4,11 @@ use crate::prelude::*;
 
 const FLASH_TIME_SECS: f32 = 0.5;
 
+#[derive(Clone, Copy, Debug)]
 pub struct Node {
     bounding_rect: Rect,
     rect: Rect,
-    pos: Vec2,
+    pub pos: Vec2,
 
     color: Rgba,
     radius: f32,
