@@ -15,6 +15,8 @@ The whole shape is treated as one bar.
 
 In essence: the playhead position is incremented linearly and continuously, and the distance between points is used to track when the playhead "taps" a node.
 
+> Please note that, as per [#1](https://github.com/jamiegibney/rhythmic_shapes/issues/1), the current system may skip nodes if they are "stepped over" in a frame.
+
 ---
 
 #### Playhead
