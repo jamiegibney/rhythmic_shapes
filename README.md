@@ -15,6 +15,8 @@ The whole shape is treated as one bar.
 
 In essence: the playhead position is increment linearly and continuously, and the distance between points is used to track when the playhead "taps" a node.
 
+---
+
 ##### Playhead
 The playhead "progress" is continuously updated each cycle. This value should be a value between `0.0` and `1.0`, and should wrap around if it ever exceeds `1.0`. Ideally, the playhead progress is incremented based on the tempo, which can be done following this formula:
 $$
@@ -32,14 +34,50 @@ $\mod1$ is the "modulo 1" function, essentially meaning the decimal part of a nu
 
 Note: in this device, the time between calls ($T$) is the time between each frame, but this may also be the time between samples, in which case you would use $T=$ `1.0 / sample_rate`.
 
+---
+
 ##### Nodes
-Nodes — the two-dimensional points — may be placed wherever you choose. See [`emplace_nodes()`](./src/ui/shape/mod.rs#L219) to see how they are placed uniformly to create regular shapes.
+Nodes — the two-dimensional points — may be placed wherever you choose. To distribute them uniformly to create regular shapes, see the below pseudocode:
+```rust
+// Our array of nodes, which are two-dimensional points:
+let nodes = [ ... ]
+
+// Some radius:
+let radius = 250
+
+// Divide 2π (tau) by the number of nodes:
+let delta = 2π / number_of_nodes
+
+// We iterate through all our nodes with a variable "i":
+for i in 0 to number_of_nodes - 1:
+    // We count backwards so that we go clockwise:
+    let index = number_of_nodes - i
+
+    // Multiple the index and the delta together, and then add π / 2
+    // to start from the top, not the right:
+    let delta_angle = index * delta + (π / 2)
+
+    // cos() gets us our x (horizontal) position:
+    let x = cos(radius * delta_angle)
+    // and sin() gets us our y (vertical) position
+    let y = sin(radius * delta_angle)
+
+    // Set the i'th node to (x, y):
+    node[i] = (x, y)
+end
+```
+
+See [`emplace_nodes()`](./src/ui/shape/mod.rs#L219) for the actual implementation in this device.
+
+---
 
 Line segments are created between consecutive nodes, which can be used to track distance. Adding the length of all segments together will yield the total length (perimeter) of the current shape. This is needed to maintain a consistent playhead speed, and identify when a node has been passed, or "tapped".
 
 Significantly, each node holds "`NoteEventData`", which may store any information you wish. In this device it simply encodes a MIDI note value, but could also, for example, encode filter cutoff frequency, distortion drive, or even a reference to an audio file for playback. 
 
 Whenever a node is "tapped", the sequencer requests its `NoteEventData`, which is then processed further and sent to the audio thread.
+
+---
 
 ##### Process
 This device follows the following process for finding when a node has been "tapped":
@@ -49,6 +87,8 @@ This device follows the following process for finding when a node has been "tapp
 - Multiply the playhead progress (a value between `0.0` and `1.0`) by the total length.
 - With this value, find the nearest two nodes to the playhead (what lengths is it between?).
 - Check if the node "behind" the playhead has changed: if it has, then the **new** "behind" node has just been tapped. This node should be stored for the next call, so you can check if it changes again.
+
+---
 
 ##### Playhead position
 
