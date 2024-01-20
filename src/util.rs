@@ -83,3 +83,27 @@ pub fn scale(value: f32, min: f32, max: f32) -> f32 {
 pub fn normalize(value: f32, min: f32, max: f32) -> f32 {
     (value - min) / (max - min)
 }
+
+/// Linearly interpolates between `a` and `b` based on the value of `t`.
+///
+/// `t` is clamped between `0` and `1`.
+pub fn lerp(a: f32, b: f32, t: f32) -> f32 {
+    let t = t.clamp(0.0, 1.0);
+    if t == 0.0 {
+        return a;
+    } else if t == 1.0 {
+        return b;
+    }
+
+    t.mul_add(b - a, a)
+}
+
+/// "Inverse linear interpolation": finds the interpolation value
+/// within a range.
+pub fn ilerp(a: f32, b: f32, val: f32) -> f32 {
+    if b == a {
+        return 0.0;
+    }
+
+    (val - a) / (b - a)
+}

@@ -32,7 +32,7 @@ impl VoiceHandler {
             // note_handler_ref,
             voices: std::array::from_fn(|_| None),
             id_counter: 0,
-            envelope_data: build_envelope(sample_rate_ref.lr(), 0.3),
+            envelope_data: build_envelope(sample_rate_ref.lr(), 0.15),
             sample_rate: sample_rate_ref,
         }
     }

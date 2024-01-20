@@ -46,7 +46,7 @@ pub fn process(audio: &mut AudioModel, buffer: &mut Buffer) {
             }
         }
 
-        let block_len = block_end - block_start;
+       let block_len = block_end - block_start;
 
         voice_handler.process_block(buffer, block_start, block_end);
         voice_handler.terminate_finished_voices();
