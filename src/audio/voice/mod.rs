@@ -44,7 +44,7 @@ impl Voice {
     }
 
     pub fn envelope_is_finished(&self) -> bool {
-        self.envelope_idx >= self.envelope_data.len()
+        self.envelope_idx > self.envelope_data.len()
     }
 
     pub fn next_envelope_block(&mut self, block: &mut [f32], block_len: usize) {

@@ -32,7 +32,7 @@ impl VoiceHandler {
             // note_handler_ref,
             voices: std::array::from_fn(|_| None),
             id_counter: 0,
-            envelope_data: build_envelope_2(sample_rate_ref.lr(), 0.005, 0.15),
+            envelope_data: build_envelope_2(sample_rate_ref.lr(), 0.003, 0.15),
             sample_rate: sample_rate_ref,
         }
     }
@@ -94,6 +94,7 @@ impl VoiceHandler {
 
         // as we know voices are in use, we can use unwrap_unchecked()
         // to avoid some unnecessary checks.
+
         let oldest_voice = unsafe {
             self.voices
                 .iter_mut()
