@@ -13,7 +13,7 @@ The whole shape is treated as one bar.
 
 ## Concept
 
-In essence: the playhead position is increment linearly and continuously, and the distance between points is used to track when the playhead "taps" a node.
+In essence: the playhead position is incremented linearly and continuously, and the distance between points is used to track when the playhead "taps" a node.
 
 ---
 
@@ -32,11 +32,11 @@ $$
 p=(p+t)\mod1
 $$
 
-Here, $b$ represents the time per bar in seconds. $T$ is the time interval between calls. $t$ is the amount to increment the playhead progress. $p$ is the playhead progress.
+Here, $b$ represents the time per bar in seconds. $T$ is the time interval between calls in seconds. $t$ is the amount to increment the playhead progress. $p$ is the playhead progress.
 
-$\mod1$ is the "modulo 1" function, essentially meaning the decimal part of a number: $1.5\mod1=0.5$
+$\mod1$ is the "modulo 1" function, essentially meaning the decimal part of a number. ($1.5\mod1=0.5$)
 
-Note: in this device, the time between calls ($T$) is the time between each frame, but this may also be the time between samples, in which case you would use $T=$ `1.0 / sample_rate`.
+> *Note*: in this device, the time between calls ($T$) is the time between each frame, but this may also be the time between samples, in which case you would use $T=$ `1.0 / sample_rate`.
 
 ---
 
@@ -57,16 +57,18 @@ for i in 0 to number_of_nodes - 1:
     // We count backwards so that we go clockwise:
     let index = number_of_nodes - i
 
-    // Multiple the index and the delta together, and then add π / 2
-    // to start from the top, not the right:
+    // Multiply the index and the delta together, and then add π / 2
+    // to rotate the shape 90º anti-clockwise so we start from the
+    // top, not the right:
     let delta_angle = index * delta + (π / 2)
 
-    // cos() gets us our x (horizontal) position:
+    // cos() gets us our x (horizontal) position...
     let x = cos(radius * delta_angle)
+
     // and sin() gets us our y (vertical) position
     let y = sin(radius * delta_angle)
 
-    // Set the i'th node to (x, y):
+    // Then, set the i'th node to (x, y):
     node[i] = (x, y)
 end
 ```
@@ -75,18 +77,18 @@ See [`emplace_nodes()`](./src/ui/shape/mod.rs#L219) for the actual implementatio
 
 ---
 
-Line segments are created between consecutive nodes, which can be used to track distance. Adding the length of all segments together will yield the total length (perimeter) of the current shape. This is needed to maintain a consistent playhead speed, and identify when a node has been passed, or "tapped".
+Line segments are created between consecutive nodes, which can be used to track distance. Adding the length of all segments together will yield the total length (perimeter) of the current shape. This is needed to both maintain a consistent playhead speed and identify when a node has been passed, or "tapped".
 
-Significantly, each node holds "`NoteEventData`", which may store any information you wish. In this device it simply encodes a MIDI note value, but could also, for example, encode filter cutoff frequency, distortion drive, or even a reference to an audio file for playback. 
+Significantly, in this device each node holds "`NoteEventData`", which may store any information you wish. In this example it simply encodes a MIDI note value, but could also, for example, encode filter cutoff frequency, distortion drive, or even a reference to an audio file for playback. 
 
-Whenever a node is "tapped", the sequencer requests its `NoteEventData`, which is then processed further and sent to the audio thread.
+Whenever a node is "tapped", the sequencer requests its `NoteEventData`, which is then processed further (the timing of the event is attached), and then sent to the audio thread to do its thing.
 
 ---
 
 #### Process
 This device follows the following process for finding when a node has been "tapped":
 
-- Calculate and store the length of all segments.
+- Calculate and store the length of all segments. This can be done with the hypotenuse: $\sqrt{(b.x-a.x)^2+(b.y-a.y)^2}$, where $a$ and $b$ are two 2-dimensional points.
 - Calculate and store the total length of all segments (i.e. the perimeter).
 - Multiply the playhead progress (a value between `0.0` and `1.0`) by the total length.
 - With this value, find the nearest two nodes to the playhead (what lengths is it between?).
@@ -98,7 +100,7 @@ This device follows the following process for finding when a node has been "tapp
 
 To find the position of the playhead between nodes (if you want to visualise it, for instance):
 
-1. Find the distance between nodes (let's call it $\mathrm{dist}$) via inverse linear interpolation (lerp):
+1. Find the distance between nodes (let's call it $\mathrm{dist}$) via inverse linear interpolation (inverse lerp):
 
 $$
 \mathrm{dist}=\frac{l-l_\mathrm{behind}}{l_\mathrm{ahead}-l_\mathrm{behind}}
@@ -114,10 +116,10 @@ where:
 2. Interpolate between the two nodes via linear interpolation (lerp):
 
 $$
-\mathrm{position}=\mathrm{dist}\cdot(p_\mathrm{behind}-p_\mathrm{ahead})+p_\mathrm{behind}
+\mathrm{position}=\mathrm{dist}\cdot(p_\mathrm{ahead}-p_\mathrm{behind})+p_\mathrm{behind}
 $$
 
 where:
-- $d$ is the interpolation factor,
+- $\mathrm{dist}$ is the interpolation factor from the previous equation,
 - $p_\mathrm{behind}$ is the *position* of the node "behind" the playhead,
 - $p_\mathrm{ahead}$ is the *position* of the node "ahead of" the playhead.
