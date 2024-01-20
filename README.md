@@ -1,6 +1,6 @@
 # Rhythmic shapes
 ## Demo
-TODO!
+https://github.com/jamiegibney/rhythmic_shapes/assets/123845103/8dbb6e0e-1e11-4fae-ae1b-345650ef0bac
 
 ## Usage
 The whole shape is treated as one bar.
@@ -33,7 +33,7 @@ $\mod1$ is the "modulo 1" function, essentially meaning the decimal part of a nu
 Note: in this device, the time between calls ($T$) is the time between each frame, but this may also be the time between samples, in which case you would use $T=$ `1.0 / sample_rate`.
 
 ##### Nodes
-Nodes — the two-dimensional points — may be placed wherever you choose. See [`emplace_nodes()`](./src/ui/shape/mod.rs:219) to see how they are placed uniformly to create regular shapes.
+Nodes — the two-dimensional points — may be placed wherever you choose. See [`emplace_nodes()`]([./src/ui/shape/mod.rs:219](https://github.com/jamiegibney/rhythmic_shapes/blob/2b0c06094f505ab66b3749c51b70b5aed0398f4c/src/ui/shape/mod.rs#L219)) to see how they are placed uniformly to create regular shapes.
 
 Line segments are created between consecutive nodes, which can be used to track distance. Adding the length of all segments together will yield the total length (perimeter) of the current shape. This is needed to maintain a consistent playhead speed, and identify when a node has been passed, or "tapped".
 
