@@ -19,15 +19,19 @@ In essence: the playhead position is increment linearly and continuously, and th
 
 ##### Playhead
 The playhead "progress" is continuously updated each cycle. This value should be a value between `0.0` and `1.0`, and should wrap around if it ever exceeds `1.0`. Ideally, the playhead progress is incremented based on the tempo, which can be done following this formula:
+
 $$
 b=\frac{60}{4\cdot\mathrm{tempo}}\\
 $$
+
 $$
 t=\frac{1}{b}\cdot T
 $$
+
 $$
 p=(p+t)\mod1
 $$
+
 Here, $b$ represents the time per bar in seconds. $T$ is the time interval between calls. $t$ is the amount to increment the playhead progress. $p$ is the playhead progress.
 
 $\mod1$ is the "modulo 1" function, essentially meaning the decimal part of a number: $1.5\mod1=0.5$
