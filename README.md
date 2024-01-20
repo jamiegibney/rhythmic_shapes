@@ -17,7 +17,7 @@ In essence: the playhead position is increment linearly and continuously, and th
 
 ---
 
-##### Playhead
+#### Playhead
 The playhead "progress" is continuously updated each cycle. This value should be a value between `0.0` and `1.0`, and should wrap around if it ever exceeds `1.0`. Ideally, the playhead progress is incremented based on the tempo, which can be done following this formula:
 
 $$
@@ -40,7 +40,7 @@ Note: in this device, the time between calls ($T$) is the time between each fram
 
 ---
 
-##### Nodes
+#### Nodes
 Nodes — the two-dimensional points — may be placed wherever you choose. To distribute them uniformly to create regular shapes, see the below pseudocode:
 ```rust
 // Our array of nodes, which are two-dimensional points:
@@ -83,7 +83,7 @@ Whenever a node is "tapped", the sequencer requests its `NoteEventData`, which i
 
 ---
 
-##### Process
+#### Process
 This device follows the following process for finding when a node has been "tapped":
 
 - Calculate and store the length of all segments.
@@ -94,7 +94,7 @@ This device follows the following process for finding when a node has been "tapp
 
 ---
 
-##### Playhead position
+#### Playhead position
 
 To find the position of the playhead between nodes (if you want to visualise it, for instance):
 
