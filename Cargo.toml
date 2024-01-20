@@ -1,6 +1,6 @@
 [package]
 name = "rhythmic_shapes"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["jamiegibney <jamiegibneyuk@gmail.com>"]
 description = "Rhythmic shapes demo for University"
@@ -10,7 +10,7 @@ repository = "https://github.com/jamiegibney/rhythmic_shapes"
 [package.metadata.bundle]
 name = "Rhythmic Shapes"
 identifier = "com.jamiegibney.rhs"
-version = "1.0.0"
+version = "1.0.1"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
