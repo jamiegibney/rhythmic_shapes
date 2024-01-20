@@ -151,12 +151,12 @@ fn build_envelope_2(
     (0..num_steps)
         .map(|i| {
             if i <= attack_steps {
-                i as f32 / attack_steps as f32 * 0.0625
+                i as f32 / attack_steps as f32 * 0.25
             }
             else {
                 (release_steps - (i - attack_steps)) as f32
                     / release_steps as f32
-                    * 0.0625
+                    * 0.25
             }
         })
         .collect()
