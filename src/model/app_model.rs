@@ -77,7 +77,8 @@ impl AppModel {
         let sequencer_rect = Rect::from_wh(pt2(650.0, 650.0));
 
         let tempo_param = Arc::new(Atomic::new(DEFAULT_BPM));
-        let time_signature_param = Arc::new(AtomicU32::new(DEFAULT_NUM_NODES as u32));
+        let time_signature_param =
+            Arc::new(AtomicU32::new(DEFAULT_NUM_NODES as u32));
 
         let note_event_sender = Arc::new(note_event_sender);
 
@@ -93,7 +94,10 @@ impl AppModel {
             sequencer_rect,
             sequencer: {
                 let sender = Arc::clone(&note_event_sender);
-                Sequence::new(sequencer_rect, note_data_tx, DEFAULT_NUM_NODES , DEFAULT_BPM)
+                Sequence::new(
+                    sequencer_rect, note_data_tx, DEFAULT_NUM_NODES,
+                    DEFAULT_BPM,
+                )
             },
             tempo_ui: {
                 let param = Arc::clone(&tempo_param);
@@ -144,12 +148,12 @@ impl AppModel {
                 let sender = Arc::clone(&note_event_sender);
 
                 thread::spawn(move || loop {
-                    let timer = timer.lr();
-                    let samples_exact = timer * sr.lr();
-                    let timing =
-                        samples_exact.round() as u32 % BUFFER_SIZE as u32;
                     if let Ok(guard) = recv.lock() {
                         if let Ok(msg) = guard.recv() {
+                            let timer = timer.lr();
+                            let samples_exact = timer * sr.lr();
+                            let timing = samples_exact.round() as u32
+                                % BUFFER_SIZE as u32;
                             sender
                                 .send(NoteEvent::NoteOn { timing, data: msg });
                         }
