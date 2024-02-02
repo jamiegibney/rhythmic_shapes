@@ -65,10 +65,10 @@ for i in 0 to number_of_nodes - 1:
     let delta_angle = index * delta + (π / 2)
 
     // cos() gets us our x (horizontal) position...
-    let x = cos(radius * delta_angle)
+    let x = cos(delta_angle) * radius
 
     // and sin() gets us our y (vertical) position
-    let y = sin(radius * delta_angle)
+    let y = sin(delta_angle) * radius
 
     // Then, set the i'th node to (x, y):
     node[i] = (x, y)
